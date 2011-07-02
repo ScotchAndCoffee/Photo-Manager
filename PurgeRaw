@@ -4,7 +4,7 @@ use strict;
 print "Searching for RAW files without matching JPG preview...\n";
 
 my @jpgs = glob("*.jpg *.JPG");
-@jpgs or die "There are now preview JPGs in this directory.";
+@jpgs or die "There are no preview JPGs in this directory.";
 
 my @raws = glob("NEF/*.NEF RAW/*.NEF");
 @raws or die "There are no RAWs we could purge.";
