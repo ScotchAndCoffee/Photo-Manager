@@ -1,32 +1,35 @@
 #!/usr/bin/perl -w
 use strict;
 
-print "Searching for RAW files without matching JPG preview...\n";
+print "Searching for RAW files without matching JPG preview.\n";
 
+# Get list of all JPGs in current folder and all NEFs in subfolder NEF/RAW
 my @jpgs = glob("*.jpg *.JPG");
 @jpgs or die "There are no preview JPGs in this directory.";
 
 my @raws = glob("NEF/*.NEF RAW/*.NEF");
 @raws or die "There are no RAWs we could purge.";
 
-
+# Remove extension
 foreach (@jpgs) {
    $_ =~ s/\..*//;
 } 
 
-my @toDelete;
+my @toDelete; 
 my $raw;
+
+# Loop over the RAWs and check if there is a matchin JPG
 foreach (@raws) {
    $raw = $_;
    $_ =~ s/\..*//;
    $_ =~ s/^.*\///;
    if(!($_ ~~ @jpgs)){
-		push(@toDelete, $raw);
+	push(@toDelete, $raw);
    }
 } 
 
 if(@toDelete){
-	print "Looks like we should delte the following RAW files:\n";
+	print "Looks like we should delete the following RAW files:\n";
 	foreach(@toDelete){print $_ . "\n";}
 	
 	print "Proceed with deleting? (Y/N): ";
@@ -34,16 +37,16 @@ if(@toDelete){
 	chomp($answer);
 	
 	if($answer eq "Y"){
-		print "Deleting...";
+		print "Deleting...\n";
 		foreach my $file ( @toDelete ) {
          	unlink $file or warn "Could not delete $file: $!";
+		print "Done - bye.\n";
      	}
-	}
 	elsif($answer eq "N"){
-		print "Aborting without deleting anything.";
+		print "Aborting - no files deleted.";
 	}
 	else{
-		print "Wrong input - aborting without deleting anything.";
+		print "Wrong input - aborting, no files deleted.";
 	}
 }
 else{
